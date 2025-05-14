@@ -162,7 +162,6 @@ public class PedidoBean implements Serializable {
 		pesquisaRealizada = false;
 	}
 
-	// Getters e Setters
 	public List<UserDTO> getClientes() {
 		return clientes;
 	}
