@@ -8,129 +8,150 @@
 <h:head>
 	<title>Samsung FakeStore</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/primeicons/6.0.1/primeicons.min.css" />
+
 	<style>
-/* Estilo limpo para a tabela de produtos */
-.tabela-pedido.ui-datatable .ui-datatable-table {
-	border: none;
-	border-collapse: collapse;
-	width: 100%;
+:root {
+	--fakeapi-blue: #1428a0;
+	--fakeapi-light: #f4f6fc;
+	--fakeapi-gray: #e1e4ec;
+	--text-dark: #2c3e50;
+	--text-light: #666;
 }
 
-.tabela-pedido .ui-datatable-header, .tabela-pedido .ui-datatable-footer
-	{
-	display: none;
-}
-
-.tabela-pedido .ui-widget-content {
-	border: none;
-}
-
-.tabela-pedido .ui-datatable-data>tr {
-	border-bottom: 1px solid #ddd;
-}
-
-.tabela-pedido .ui-datatable-data>tr:last-child {
-	border-bottom: none;
-}
-
-.tabela-pedido .ui-datatable-data td {
-	border: none !important;
-}
-/* Estilo limpo para a tabela de produtos */
-.tabela-pedido.ui-datatable .ui-datatable-table {
-	border: none;
-	border-collapse: collapse;
-	width: 100%;
-}
-
-.tabela-pedido .ui-datatable-header, .tabela-pedido .ui-datatable-footer
-	{
-	display: none;
-}
-
-.tabela-pedido .ui-widget-content {
-	border: none;
-}
-
-.tabela-pedido .ui-datatable-data>tr {
-	border-bottom: 1px solid #ddd;
-}
-
-.tabela-pedido .ui-datatable-data>tr:last-child {
-	border-bottom: none;
-}
-
-.tabela-pedido .ui-datatable-data td {
-	border: none !important;
-}
-
+/* Filtro */
 .filtro-container {
 	display: grid;
 	grid-template-columns: 150px 1fr;
-	row-gap: 1rem;
-	column-gap: 1rem;
+	gap: 1rem;
 	align-items: center;
+	width: 100%;
+	background-color: var(--fakeapi-light);
+	padding: 1rem;
+	border-radius: 8px;
+}
+
+.select-reduzido, .input-reduzido {
+	max-width: 300px;
 	width: 100%;
 }
 
-.filtro-container .row-span {
-	grid-column: span 2;
+.botoes {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 1rem;
+	margin-top: 0.5rem;
 }
 
+/* Datas com ícones */
 .picker-group {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.picker-wrapper {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
 }
 
+.picker-wrapper .ui-inputfield {
+	width: 120px;
+}
+
+/* Ícones */
 .picker-group i {
-	font-size: 1.2rem;
-	color: gray;
+	color: var(--text-light);
+	font-size: 1.4rem;
 }
 
-.botoes {
-	display: flex;
-	gap: 1rem;
+/* Animação nos botões */
+.ui-button {
+	transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.ui-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Card */
 .pedido-card {
 	margin-bottom: 2rem;
-	padding: 1rem;
-	border: 1px solid #ccc;
-	border-radius: 8px;
-	background-color: #f9f9f9;
+	padding: 1.5rem;
+	border: 1px solid var(--fakeapi-gray);
+	border-radius: 10px;
+	background-color: white;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	transition: transform 0.3s ease;
+}
+
+.pedido-card:hover {
+	transform: scale(1.01);
 }
 
 .pedido-titulo {
-	font-weight: bold;
-	color: #2c3e50;
+	font-weight: 600;
+	color: var(--text-dark);
+	font-size: 1.1rem;
 	margin-bottom: 0.5rem;
 }
 
 .pedido-info {
 	display: flex;
 	justify-content: space-between;
+	flex-wrap: wrap;
 	font-size: 0.9em;
-	color: #777;
+	color: var(--text-light);
 	margin-bottom: 1rem;
 }
 
-.select-reduzido, .input-reduzido {
-	max-width: 300px;
+/* Tabela */
+.tabela-pedido.ui-datatable .ui-datatable-table {
+	border-collapse: collapse;
+	width: 100%;
 }
 
+.tabela-pedido .ui-datatable-header, .tabela-pedido .ui-datatable-footer
+	{
+	display: none;
+}
+
+.tabela-pedido .ui-widget-content {
+	border: none;
+}
+
+.tabela-pedido .ui-datatable-data>tr {
+	border-bottom: 1px solid var(--fakeapi-gray);
+	transition: background-color 0.2s ease;
+}
+
+.tabela-pedido .ui-datatable-data>tr:hover {
+	background-color: #eaf0ff;
+}
+
+.tabela-pedido .ui-datatable-data td {
+	border: none !important;
+	padding: 0.8rem 1rem;
+	vertical-align: middle;
+}
+
+/* Responsivo */
 @media screen and (max-width: 768px) {
 	.filtro-container {
 		grid-template-columns: 1fr;
 	}
-	.picker-group {
-		flex-wrap: wrap;
-	}
-	.select-reduzido, .input-reduzido {
-		width: 100%;
-		max-width: 100%;
-	}
 	.botoes {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.picker-group {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.pedido-info {
 		flex-direction: column;
 		align-items: flex-start;
 	}
@@ -142,7 +163,6 @@
 	<h:form id="form">
 		<p:panel header="Search Criteria" style="margin: 2rem">
 			<div class="filtro-container">
-
 				<h:outputLabel for="cliente" value="Client" />
 				<p:selectOneMenu id="cliente"
 					value="#{pedidoBean.clienteSelecionado}"
@@ -156,25 +176,30 @@
 
 				<h:outputLabel value="Order Date" />
 				<div class="picker-group">
-					<p:datePicker value="#{pedidoBean.dataInicio}" pattern="yyyy-MM-dd"
-						placeholder="From" style="width: 120px;" />
-					<i class="pi pi-calendar"></i>
-					<p:datePicker value="#{pedidoBean.dataFim}" pattern="yyyy-MM-dd"
-						placeholder="To" style="width: 120px;" />
-					<i class="pi pi-calendar"></i>
+					<div class="picker-wrapper">
+						<p:datePicker value="#{pedidoBean.dataInicio}"
+							pattern="yyyy-MM-dd" placeholder="From" />
+						<i class="pi pi-calendar"></i>
+					</div>
+					<div class="picker-wrapper">
+						<p:datePicker value="#{pedidoBean.dataFim}" pattern="yyyy-MM-dd"
+							placeholder="To" />
+						<i class="pi pi-calendar"></i>
+					</div>
 				</div>
 
 				<h:outputLabel value="Order Number" />
 				<p:inputText value="#{pedidoBean.numeroPedido}"
-					styleClass="input-reduzido" placeholder="e.g. 5" />
+					styleClass="input-reduzido" placeholder="ex: 3" />
 
 				<h:outputText value="" />
 				<div class="botoes">
-					<p:commandButton value="Reset"
+					<p:commandButton value="Reset" icon="pi pi-refresh"
 						action="#{pedidoBean.resetarFiltros}" update="form"
 						styleClass="ui-button-secondary" />
-					<p:commandButton value="Search"
-						action="#{pedidoBean.buscarPedidos}" update="form" />
+					<p:commandButton value="Search" icon="pi pi-search"
+						action="#{pedidoBean.buscarPedidos}" update="form"
+						styleClass="ui-button-primary" />
 				</div>
 			</div>
 
@@ -193,11 +218,12 @@
 				<div class="pedido-card">
 					<div class="pedido-titulo">#{pedido.username}</div>
 					<div class="pedido-info">
-						<span>##{pedido.id} (#{pedido.date.substring(0, 10)})</span> <span><h:outputText
-								value="#{pedido.total}">
+						<span>##{pedido.id} (#{pedido.date.substring(0, 10)})</span> <span>
+							<h:outputText value="#{pedido.total}">
 								<f:convertNumber type="currency" currencySymbol="$"
 									minFractionDigits="2" />
-							</h:outputText> </span>
+							</h:outputText>
+						</span>
 					</div>
 
 					<p:dataTable var="produto" value="#{pedido.products}"
