@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<title>Samsung FakeStore</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<style>
+/* Estilo limpo para a tabela de produtos */
+.tabela-pedido.ui-datatable .ui-datatable-table {
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.tabela-pedido .ui-datatable-header, .tabela-pedido .ui-datatable-footer
+	{
+	display: none;
+}
+
+.tabela-pedido .ui-widget-content {
+	border: none;
+}
+
+.tabela-pedido .ui-datatable-data>tr {
+	border-bottom: 1px solid #ddd;
+}
+
+.tabela-pedido .ui-datatable-data>tr:last-child {
+	border-bottom: none;
+}
+
+.tabela-pedido .ui-datatable-data td {
+	border: none !important;
+}
+/* Estilo limpo para a tabela de produtos */
+.tabela-pedido.ui-datatable .ui-datatable-table {
+	border: none;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.tabela-pedido .ui-datatable-header, .tabela-pedido .ui-datatable-footer
+	{
+	display: none;
+}
+
+.tabela-pedido .ui-widget-content {
+	border: none;
+}
+
+.tabela-pedido .ui-datatable-data>tr {
+	border-bottom: 1px solid #ddd;
+}
+
+.tabela-pedido .ui-datatable-data>tr:last-child {
+	border-bottom: none;
+}
+
+.tabela-pedido .ui-datatable-data td {
+	border: none !important;
+}
+
+.filtro-container {
+	display: grid;
+	grid-template-columns: 150px 1fr;
+	row-gap: 1rem;
+	column-gap: 1rem;
+	align-items: center;
+	width: 100%;
+}
+
+.filtro-container .row-span {
+	grid-column: span 2;
+}
+
+.picker-group {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.picker-group i {
+	font-size: 1.2rem;
+	color: gray;
+}
+
+.botoes {
+	display: flex;
+	gap: 1rem;
+}
+
+.pedido-card {
+	margin-bottom: 2rem;
+	padding: 1rem;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+}
+
+.pedido-titulo {
+	font-weight: bold;
+	color: #2c3e50;
+	margin-bottom: 0.5rem;
+}
+
+.pedido-info {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.9em;
+	color: #777;
+	margin-bottom: 1rem;
+}
+
+.select-reduzido, .input-reduzido {
+	max-width: 300px;
+}
+
+@media screen and (max-width: 768px) {
+	.filtro-container {
+		grid-template-columns: 1fr;
+	}
+	.picker-group {
+		flex-wrap: wrap;
+	}
+	.select-reduzido, .input-reduzido {
+		width: 100%;
+		max-width: 100%;
+	}
+	.botoes {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+</style>
+</h:head>
+
+<h:body>
+	<h:form id="form">
+		<p:panel header="Search Criteria" style="margin: 2rem">
+			<div class="filtro-container">
+
+				<h:outputLabel for="cliente" value="Client" />
+				<p:selectOneMenu id="cliente"
+					value="#{pedidoBean.clienteSelecionado}"
+					styleClass="select-reduzido">
+					<f:converter converterId="javax.faces.Long" />
+					<f:selectItem itemLabel="-- SELECT --" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pedidoBean.clientes}" var="c"
+						itemLabel="#{c.username}" itemValue="#{c.id}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Order Date" />
+				<div class="picker-group">
+					<p:datePicker value="#{pedidoBean.dataInicio}" pattern="yyyy-MM-dd"
+						placeholder="From" style="width: 120px;" />
+					<i class="pi pi-calendar"></i>
+					<p:datePicker value="#{pedidoBean.dataFim}" pattern="yyyy-MM-dd"
+						placeholder="To" style="width: 120px;" />
+					<i class="pi pi-calendar"></i>
+				</div>
+
+				<h:outputLabel value="Order Number" />
+				<p:inputText value="#{pedidoBean.numeroPedido}"
+					styleClass="input-reduzido" placeholder="e.g. 5" />
+
+				<h:outputText value="" />
+				<div class="botoes">
+					<p:commandButton value="Reset"
+						action="#{pedidoBean.resetarFiltros}" update="form"
+						styleClass="ui-button-secondary" />
+					<p:commandButton value="Search"
+						action="#{pedidoBean.buscarPedidos}" update="form" />
+				</div>
+			</div>
+
+			<p:messages id="msgs" showDetail="true" autoUpdate="true" />
+
+			<p:outputPanel id="panelErro" layout="block"
+				rendered="#{pedidoBean.pesquisaRealizada and empty pedidoBean.pedidos}">
+				<h:outputText value="No orders found" styleClass="ui-messages-info" />
+			</p:outputPanel>
+		</p:panel>
+
+		<p:panel header="Orders"
+			rendered="#{pedidoBean.pesquisaRealizada and not empty pedidoBean.pedidos}"
+			style="margin: 2rem">
+			<ui:repeat value="#{pedidoBean.pedidos}" var="pedido">
+				<div class="pedido-card">
+					<div class="pedido-titulo">#{pedido.username}</div>
+					<div class="pedido-info">
+						<span>##{pedido.id} (#{pedido.date.substring(0, 10)})</span> <span><h:outputText
+								value="#{pedido.total}">
+								<f:convertNumber type="currency" currencySymbol="$"
+									minFractionDigits="2" />
+							</h:outputText> </span>
+					</div>
+
+					<p:dataTable var="produto" value="#{pedido.products}"
+						styleClass="tabela-pedido">
+						<p:column headerText="Product">
+							<h:panelGrid columns="2" cellpadding="5"
+								style="align-items: center">
+								<h:graphicImage value="#{produto.image}" width="64" height="64"
+									alt="Product" />
+								<h:panelGroup layout="block" style="margin-left: 1rem">
+									<h:outputText value="#{produto.title}"
+										style="font-weight: bold; display: block" />
+									<h:outputText value="#{produto.description}"
+										style="font-size: 0.85em; color: #666;" />
+								</h:panelGroup>
+							</h:panelGrid>
+						</p:column>
+
+						<p:column headerText="Price">
+							<h:outputText value="#{produto.price}"
+								rendered="#{not empty produto.price}" />
+							<h:outputText value="N/A" rendered="#{empty produto.price}" />
+						</p:column>
+
+						<p:column headerText="Qty">
+							<h:outputText value="#{produto.quantity}" />
+						</p:column>
+
+						<p:column headerText="Subtotal">
+							<h:outputText value="#{produto.price * produto.quantity}"
+								rendered="#{not empty produto.price}" />
+							<h:outputText value="N/A" rendered="#{empty produto.price}" />
+						</p:column>
+					</p:dataTable>
+				</div>
+			</ui:repeat>
+		</p:panel>
+	</h:form>
+</h:body>
+</html>
