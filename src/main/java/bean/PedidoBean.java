@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -92,9 +91,6 @@ public class PedidoBean implements Serializable {
 			List<CartDTO> todos = mapper.readValue(res.body(), new TypeReference<List<CartDTO>>() {
 			});
 
-			Map<Long, Double> precoPorId = produtos.stream()
-					.collect(Collectors.toMap(ProductDTO::getId, ProductDTO::getPrice));
-
 			DateTimeFormatter isoFormatter = DateTimeFormatter.ISO_DATE_TIME;
 
 			List<CartDTO> filtrados = todos.stream()
@@ -116,12 +112,13 @@ public class PedidoBean implements Serializable {
 						}
 					})
 
-					.peek(p -> {
+					.map(p -> {
 						double total = 0;
 						for (ProductQuantity prod : p.getProducts()) {
 							ProductDTO detalhes = produtos.stream()
 									.filter(produto -> Objects.equals(produto.getId(), prod.getProductId())).findFirst()
 									.orElse(null);
+
 							if (detalhes != null) {
 								prod.setPrice(detalhes.getPrice());
 								prod.setTitle(detalhes.getTitle());
@@ -136,9 +133,9 @@ public class PedidoBean implements Serializable {
 						if (cliente != null) {
 							p.setUsername(cliente.getUsername());
 						}
-					})
 
-					.collect(Collectors.toList());
+						return p; // transformado com dados completos
+					}).collect(Collectors.toList());
 
 			this.pedidos = filtrados;
 		} catch (Exception e) {
